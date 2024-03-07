@@ -13,10 +13,10 @@ int main()
     }
 
     if (x % 2 == 0) {
-        printf("x is even\n");
+        cout << x << " is even" << endl;
     }
 
     else {
-        printf("x is odd\n");
+        cout << x << " is odd" << endl;
     }
 }
