@@ -5,17 +5,23 @@ using namespace std;
 
 int main() 
 {    
-    RPG person1;
-    RPG person2("Mark", 100, 50, 50, "mage");
+    RPG p1 = RPG("Wiz", 70, 45, 15, "mage");
+    RPG p2 = RPG();
 
-    cout << "\nPerson 1 is alive: " << person1.isAlive() << endl;
-    cout << "\nPerson 2 is alive: " << person2.isAlive() << endl;
+    printf("%s Current Stats\n", p1.getName().c_str());
+    printf("Health: %i\t Strength: %i\t Defense: %i\n", p1.getHealth(), p1.getStrength(), p1.getDefense());
 
-    person1.updateHealth(person1.getHealth() + 50);
-    cout << "\nPerson 1 health: " << person1.getHealth() << endl;
+    printf("%s Current Stats\n", p2.getName().c_str());
+    printf("Health: %i\t Strength: %i\t Defense: %i\n", p2.getHealth(), p2.getStrength(), p2.getDefense());
 
-    person2.updateHealth(person2.getHealth() + 40);
-    cout << "\nPerson 2 health: " << person2.getHealth() << endl;
+    p1.updateHealth(50);
+    p2.updateHealth(50);
+
+    printf("Health: %i\t", p1.getHealth());
+    printf("Health: %i\t", p2.getHealth());
+
+    printf("\np1 is alive: %d", p1.isAlive());
+    printf("\np1 is alive: %d", p2.isAlive());
 
     return 0;
 }
