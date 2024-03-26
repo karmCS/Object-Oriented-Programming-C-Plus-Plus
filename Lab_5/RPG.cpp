@@ -1,4 +1,5 @@
 #include "RPG.h"
+#include <iostream>
 
 RPG::RPG()
 {
@@ -84,4 +85,29 @@ bool RPG::isAlive() {
     else {
         return false;
     }
+}
+
+void RPG::attack(RPG * opponent){
+    int oppHealth = (*opponent).getHealth();
+    int oppDefense = (*opponent).getDefense();
+
+    int newHealth = oppHealth - (strength - oppDefense);
+    
+    (*opponent).updateHealth(newHealth);
+}
+
+void RPG::useSkill(RPG * opponent){
+    for (int i = 0; i < SKILL_SIZE; i++) {
+        printf("Skill %i: %s\n", i, skills[i].c_str());
+    }
+
+    int chosenSkillIndex;
+
+    printf("Choose a skill to use: Enter 0 or 1\n");
+    cin >> chosenSkillIndex;
+
+    string chosen_skill = skills[chosenSkillIndex];
+
+    printAction(chosen_skill, (*opponent));
+    attack(opponent);
 }
