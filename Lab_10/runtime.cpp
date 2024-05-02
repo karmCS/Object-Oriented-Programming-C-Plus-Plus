@@ -2,6 +2,7 @@
 # include <vector>
 # include <fstream>
 # include <ctime>
+# include <chrono>
 using namespace std;
 
 int iterativeSearch(vector<int>v, int elem){
@@ -46,34 +47,105 @@ void vecGen(string filename, vector<int> & v){
     file.close();
 }
 
-int main(){
-    vector<int> v;
-    vecGen("10000_numbers.csv", v);
+void writeTimes(string filename, const vector<double> times, const vector<int> n){
+    ofstream myFile(filename);
 
-    vector<int> elem_to_find;
+    myFile << "Number of Elements (n)\t Time (sec) " << endl;
+    for (int i = 0; i < times.size(); i++){
+
+        myFile << n[i] << "\t" << times[i] << "\n";
+    }
+    myFile.close();
+    cout << "Wrote to " << filename << endl;
+}
+
+double average(vector <double> a){
+    double average = 0.0;
+    double sum = 0.0;
+    
+    for (int i = 0; i < a.size(); i++){
+        sum = sum + a[i];
+    }
+
+    average = sum / a.size();
+    return average;
+}
+
+int main(){
+    // test elements to search for
+    vector <int> elem_to_find;
     vecGen("test_elem.csv", elem_to_find);
 
-    for(int i = 0; i < elem_to_find.size(); i++){
-        int elem = elem_to_find[i];
+    //n list of numbers
+    vector<int> file_sizes;
+    vecGen("sizes.csv", file_sizes);
 
-        clock_t start = clock();
-        int index_if_found = iterativeSearch(v, elem);
-        clock_t end = clock();
+    //n list of numbers
+    vector<int>v;
 
-        double elapsed_time_in_sec = (double(end-start)/CLOCKS_PER_SEC);
+    //results of times
+    vector<double> times;
 
-        cout << index_if_found << ":" << elapsed_time_in_sec << endl;
-    }
+    //results of times
+    vector<double> avg;
 
-    for(int i = 0; i < elem_to_find.size(); i++){
-        int elem = elem_to_find[i];
+        for(int i = 0; i < file_sizes.size(); i++){
+            
+            string filename = to_string(file_sizes[i]) + "_numbers.csv";
+            vecGen(filename, v);
 
-        clock_t start = clock();
-        int index_if_found = binarySearch(v, 0, v.size()-1, elem);
-        clock_t end = clock();
+            cout << filename << endl;
 
-        double elapsed_time_in_sec = (double(end-start)/CLOCKS_PER_SEC);
+            times.clear();
 
-        cout << index_if_found << ":" << elapsed_time_in_sec << endl;
-    }
+            for(int j = 0; j < elem_to_find.size(); j++){
+                int elem = elem_to_find[j];
+
+                auto start = chrono::high_resolution_clock::now();
+                int index_if_found = iterativeSearch(v, elem);
+                auto end = chrono::high_resolution_clock::now(); 
+
+                auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
+                double duration_double = std::chrono::duration<double>(duration).count();
+
+                cout << index_if_found << ":" << duration_double << endl;
+
+                times.push_back(duration_double);
+            }
+
+            double average_times = average(times);
+
+            times.push_back(average_times);   
+        }
+
+        writeTimes("iterativeSearch_Times.csv", times, file_sizes);
+        
+        avg.clear();
+
+        for(int i = 0; i < file_sizes.size(); i++){
+            string filename = to_string(file_sizes[i]) + "_numbers.csv";
+            vecGen(filename, v);
+
+            cout << filename << endl;
+
+            times.clear();
+
+            for(int j = 0; j < elem_to_find.size(); j++){
+                int elem = elem_to_find[j];
+
+                auto start = chrono::high_resolution_clock::now();
+                int index_if_found = binarySearch(v, 0, v.size()-1, elem);
+                auto end = chrono::high_resolution_clock::now(); 
+
+                auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
+                double duration_double = std::chrono::duration<double>(duration).count();
+
+                cout << index_if_found << ":" << duration_double << endl;
+
+                times.push_back(duration_double);
+            }
+        }
+        
+        writeTimes("binarySearch_times.csv", times, file_sizes);
 }
+

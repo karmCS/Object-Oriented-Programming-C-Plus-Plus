@@ -2,9 +2,11 @@
 # include <vector>
 # include <fstream>
 # include <ctime>
+# include <chrono>
 using namespace std;
 
-int iterativeSearch(vector<int>v, int elem){
+template<typename T>
+int iterativeSearch(vector<T>v, T elem){
     for (int i = 0; i < v.size(); i++){
         if (v[i] == elem){
             return i;
@@ -14,7 +16,8 @@ int iterativeSearch(vector<int>v, int elem){
     return -1;
 }
 
-int binarySearch(vector<int> & v, int startIndex, int endIndex, int elem){
+template<typename T>
+int binarySearch(vector<T> &v, int startIndex, int endIndex, T elem){
     if (startIndex > endIndex){
         return -1;
     }
@@ -36,9 +39,10 @@ int binarySearch(vector<int> & v, int startIndex, int endIndex, int elem){
     return binarySearch(v, startIndex, endIndex, elem);
 }
 
-void vecGen(string filename, vector<int> & v){
+template<typename T>
+void vecGen(string filename, vector<T> & v){
     ifstream file(filename);
-    int num;
+    T num;
     v.clear();
     while (file.is_open() && file >> num){
         v.push_back(num);
@@ -56,24 +60,28 @@ int main(){
     for(int i = 0; i < elem_to_find.size(); i++){
         int elem = elem_to_find[i];
 
-        clock_t start = clock();
-        int index_if_found = iterativeSearch(v, elem);
-        clock_t end = clock();
+        auto start = chrono::high_resolution_clock::now();
+        int index_if_found = binarySearch(v, 0, v.size()-1, elem);
+        auto end = chrono::high_resolution_clock::now();
 
-        double elapsed_time_in_sec = (double(end-start)/CLOCKS_PER_SEC);
+        auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-        cout << index_if_found << ":" << elapsed_time_in_sec << endl;
+        cout << index_if_found << ":" << duration.count() << endl;
     }
 
-    for(int i = 0; i < elem_to_find.size(); i++){
-        int elem = elem_to_find[i];
+    vector<double> d;
+    vecGen("1000_double.csv", d);
+    vector<double> double_to_find;
+    vecGen("double_to_find.csv", double_to_find);
 
-        clock_t start = clock();
-        int index_if_found = binarySearch(v, 0, v.size()-1, elem);
-        clock_t end = clock();
+    for(int i = 0; i < double_to_find.size(); i++){
+        double elem = double_to_find[i];
 
-        double elapsed_time_in_sec = (double(end-start)/CLOCKS_PER_SEC);
+        auto start = chrono::high_resolution_clock::now();
+        int index_if_found = binarySearch(d, 0, d.size()-1, elem);
+        auto end = chrono::high_resolution_clock::now();
 
-        cout << index_if_found << ":" << elapsed_time_in_sec << endl;
+        auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
+
     }
 }

@@ -2,6 +2,8 @@
 # include <vector>
 # include <fstream>
 # include <ctime>
+# include <chrono>
+
 using namespace std;
 
 int iterativeSearch(vector<int>v, int elem){
@@ -53,27 +55,32 @@ int main(){
     vector<int> elem_to_find;
     vecGen("test_elem.csv", elem_to_find);
 
+    cout << "\niterative search\n" << endl;
+
     for(int i = 0; i < elem_to_find.size(); i++){
         int elem = elem_to_find[i];
 
-        clock_t start = clock();
+        auto start = chrono::high_resolution_clock::now();
         int index_if_found = iterativeSearch(v, elem);
-        clock_t end = clock();
+        auto end = chrono::high_resolution_clock::now();
 
-        double elapsed_time_in_sec = (double(end-start)/CLOCKS_PER_SEC);
+        auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-        cout << index_if_found << ":" << elapsed_time_in_sec << endl;
+        cout << index_if_found << ":" << duration.count() << " microseconds" << endl;
     }
 
+    cout << "\nbinary search\n" << endl;
+
+
     for(int i = 0; i < elem_to_find.size(); i++){
         int elem = elem_to_find[i];
 
-        clock_t start = clock();
+        auto start = chrono::high_resolution_clock::now();
         int index_if_found = binarySearch(v, 0, v.size()-1, elem);
-        clock_t end = clock();
+        auto end = chrono::high_resolution_clock::now();
 
-        double elapsed_time_in_sec = (double(end-start)/CLOCKS_PER_SEC);
+        auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-        cout << index_if_found << ":" << elapsed_time_in_sec << endl;
+        cout << index_if_found << ":" << duration.count() << " microseconds" << endl;
     }
 }
