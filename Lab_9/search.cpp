@@ -61,12 +61,14 @@ int main(){
         int elem = elem_to_find[i];
 
         auto start = chrono::high_resolution_clock::now();
-        int index_if_found = iterativeSearch(v, elem);
+
+        int index_if_found_it = iterativeSearch(v, elem);
+
         auto end = chrono::high_resolution_clock::now();
 
-        auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
+        auto duration_it = chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-        cout << index_if_found << ":" << duration.count() << " microseconds" << endl;
+        cout << index_if_found_it << ":" << duration_it.count() << " microseconds" << endl;
     }
 
     cout << "\nbinary search\n" << endl;
@@ -76,11 +78,13 @@ int main(){
         int elem = elem_to_find[i];
 
         auto start = chrono::high_resolution_clock::now();
-        int index_if_found = binarySearch(v, 0, v.size()-1, elem);
+
+        int index_if_found_bi = binarySearch(v, 0, v.size()-1, elem);
+
         auto end = chrono::high_resolution_clock::now();
 
-        auto duration = chrono::duration_cast<std::chrono::microseconds>(end - start);
-
-        cout << index_if_found << ":" << duration.count() << " microseconds" << endl;
+        auto duration_bi = chrono::duration_cast<std::chrono::microseconds>(end - start);
+        
+        cout << index_if_found_bi << ":" << duration_bi.count() << " microseconds" << endl;
     }
 }
